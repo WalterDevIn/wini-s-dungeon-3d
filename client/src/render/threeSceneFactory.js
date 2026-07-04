@@ -25,12 +25,6 @@ export function createThreeScene() {
   scene.add(createWall({ width: 0.3, height: 3, depth: 10, x: -5, y: 1.5, z: 0 }));
   scene.add(createWall({ width: 0.3, height: 3, depth: 10, x: 5, y: 1.5, z: 0 }));
 
-  const playerGeometry = new THREE.CylinderGeometry(0.45, 0.45, 1.8, 24);
-  const playerMaterial = new THREE.MeshStandardMaterial({ color: 0x4f8cff });
-  const player = new THREE.Mesh(playerGeometry, playerMaterial);
-  player.position.y = 0.9;
-  scene.add(player);
-
   const ambientLight = new THREE.AmbientLight(0xffffff, 0.45);
   scene.add(ambientLight);
 
