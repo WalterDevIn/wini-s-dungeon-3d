@@ -10,6 +10,11 @@ export function createMenuScreen() {
   title.textContent = 'Wini-s-dungeon-3d vPreliminar';
   title.style.margin = '0';
 
+  const connectionStatus = document.createElement('p');
+  connectionStatus.textContent = 'Conectando con servidor...';
+  connectionStatus.setAttribute('aria-live', 'polite');
+  connectionStatus.style.margin = '0';
+
   const label = document.createElement('label');
   label.textContent = 'Nombre:';
   label.style.display = 'grid';
@@ -36,7 +41,15 @@ export function createMenuScreen() {
     message.textContent = `Entrando como guest: ${displayName}`;
   });
 
-  screen.append(title, label, button, message);
+  screen.append(title, connectionStatus, label, button, message);
 
-  return screen;
+  return {
+    element: screen,
+    setConnectedSession(sessionId) {
+      connectionStatus.textContent = `Conectado como sesión ${sessionId}`;
+    },
+    setDisconnected() {
+      connectionStatus.textContent = 'Desconectado del servidor';
+    },
+  };
 }
