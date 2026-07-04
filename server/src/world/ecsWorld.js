@@ -12,8 +12,12 @@ function createEcsWorld({ id = 'default-dungeon' } = {}) {
     };
   }
 
+  function getEntityForCharacter(characterId) {
+    return entitiesByCharacterId.get(characterId) || null;
+  }
+
   function getOrCreateEntityForCharacter(characterId) {
-    const existingEntity = entitiesByCharacterId.get(characterId);
+    const existingEntity = getEntityForCharacter(characterId);
 
     if (existingEntity) {
       return existingEntity;
@@ -31,6 +35,7 @@ function createEcsWorld({ id = 'default-dungeon' } = {}) {
 
   return {
     id,
+    getEntityForCharacter,
     getOrCreateEntityForCharacter,
     getEntities,
   };
