@@ -6,7 +6,7 @@ Wini-s-dungeon-3d vPreliminar
 
 ## Hito implementado
 
-Hito 3 — Conexión cliente-servidor
+Hito 4 — Guest real + personaje default
 
 ## Estado
 
@@ -17,14 +17,19 @@ Cerrado.
 - Existe estructura mínima separada de cliente y servidor.
 - Desde la raíz, `npm install` instala el workspace del cliente, el workspace del servidor y las dependencias del proyecto.
 - Desde la raíz, `npm run dev` levanta cliente y servidor en paralelo.
-- El servidor HTTP mínimo arranca y muestra en consola `Server running on http://localhost:3000`.
-- El servidor Socket.IO queda adjunto al servidor HTTP.
-- Al abrir el cliente, el cliente intenta conectarse al servidor Socket.IO.
-- Cuando el cliente conecta, el servidor crea un `sessionId`.
-- El servidor responde el evento `SESSION_CREATED`.
+- El Hito 3 sigue funcionando: el cliente se conecta al servidor y recibe `SESSION_CREATED`.
 - El cliente muestra `Conectado como sesión <sessionId>`.
-- El servidor registra en consola una conexión nueva con `Client connected: <sessionId>`.
-- La pantalla de entrada guest local del Hito 2 sigue existiendo.
+- Al apretar `Entrar como guest`, el cliente envía `ENTER_AS_GUEST` al servidor con el nombre escrito.
+- El servidor recibe `ENTER_AS_GUEST`.
+- El servidor normaliza nombres vacíos o con espacios a `Guest`.
+- El servidor crea una account en memoria con `type: "guest"` y `displayName` normalizado.
+- El servidor asocia la account guest a la sesión en memoria.
+- El servidor crea o recupera un personaje default asociado a esa account.
+- El servidor emite `GUEST_READY` con `{ account }`.
+- El servidor emite `CHARACTER_READY` con `{ character }`.
+- El cliente renderiza la pantalla de personaje usando el payload recibido por `CHARACTER_READY`.
+- El cliente muestra `Personaje listo`.
+- El cliente muestra `Humano Guerrero`.
 
 ## Cómo probar
 
@@ -41,36 +46,49 @@ Verificar:
 2. El servidor informa en consola que está corriendo en `http://localhost:3000`.
 3. El cliente informa la URL de Vite, por defecto `http://localhost:5173`.
 4. Al abrir el cliente se ve `Wini-s-dungeon-3d vPreliminar`.
-5. El cliente muestra inicialmente `Conectando con servidor...`.
-6. Luego muestra `Conectado como sesión <sessionId>`.
-7. En la consola del servidor aparece `Client connected: <sessionId>`.
-8. El botón `Entrar como guest` sigue respondiendo localmente, sin crear guest real en servidor.
+5. El cliente muestra `Conectado como sesión <sessionId>`.
+6. Escribir `Walter` en el input.
+7. Apretar `Entrar como guest`.
+8. En consola del servidor aparece `ENTER_AS_GUEST received: <sessionId>`.
+9. En consola del servidor aparece `Guest account created: <accountId> (Walter)`.
+10. En consola del servidor aparece `Default character ready: <characterId> (Walter)`.
+11. El cliente muestra `Personaje listo`.
+12. El cliente muestra `Humano Guerrero`.
+13. Recargar la pestaña.
+14. Dejar el input vacío o con espacios.
+15. Apretar `Entrar como guest`.
+16. En consola del servidor aparece `Guest account created: <accountId> (Guest)`.
+17. El cliente sigue mostrando un personaje válido.
+18. No aparece sala 3D, mundo, snapshot, movimiento, inventario, combate ni multiplayer jugable.
 
 ## Archivos relevantes
 
-- `package.json`
-- `client/package.json`
-- `client/index.html`
 - `client/src/main.js`
-- `client/src/screens/menuScreen.js`
-- `client/src/ui/screenRouter.js`
 - `client/src/net/socketClient.js`
-- `server/package.json`
-- `server/src/index.js`
-- `server/src/net/protocol.js`
+- `client/src/screens/menuScreen.js`
+- `client/src/screens/characterSelectScreen.js`
+- `client/src/ui/screenRouter.js`
 - `server/src/net/socketServer.js`
+- `server/src/net/protocol.js`
+- `server/src/auth/sessionService.js`
+- `server/src/auth/accountService.js`
+- `server/src/characters/characterService.js`
 
 ## Pendientes / limitaciones
 
 - No hay login real.
-- No hay guest real del servidor.
-- No hay personaje.
+- No hay password, OAuth, cookies ni JWT.
+- No hay base de datos ni persistencia en disco.
+- No hay selección real entre varios personajes.
+- No hay creación configurable de personaje.
 - No hay mundo servidor.
+- No hay sala 3D.
 - No hay snapshots.
-- No hay multiplayer visible entre pestañas.
+- No hay movimiento.
+- No hay multiplayer jugable.
 - No hay Three.js.
 - No hay gameplay.
 
 ## Próximo hito sugerido
 
-Hito 4 — Guest real + personaje default.
+Hito 5 — Entrar a una sala 3D local.
