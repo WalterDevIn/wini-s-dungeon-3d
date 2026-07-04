@@ -1,6 +1,7 @@
+import { createPlayerInputController } from '../input/playerInputController.js';
 import { mountThreeRenderer } from '../render/threeRenderer.js';
 
-export function createGameScreen({ onJoinDungeon } = {}) {
+export function createGameScreen({ onJoinDungeon, onPlayerInput } = {}) {
   const screen = document.createElement('section');
   screen.style.display = 'grid';
   screen.style.gridTemplateRows = 'auto auto 1fr';
@@ -11,7 +12,7 @@ export function createGameScreen({ onJoinDungeon } = {}) {
   screen.style.fontFamily = 'system-ui, sans-serif';
 
   const instructions = document.createElement('p');
-  instructions.textContent = 'Sala 3D desde snapshot del servidor. Arrastrá el mouse sobre la escena para rotar la cámara.';
+  instructions.textContent = 'Sala 3D desde snapshot del servidor. Usá WASD para moverte. Arrastrá el mouse para rotar la cámara.';
   instructions.style.margin = '0';
 
   const status = document.createElement('p');
@@ -26,6 +27,7 @@ export function createGameScreen({ onJoinDungeon } = {}) {
 
   screen.append(instructions, status, viewport);
 
+  let inputController = null;
   let rendererHandle = null;
   let pendingSnapshot = null;
 
@@ -41,6 +43,11 @@ export function createGameScreen({ onJoinDungeon } = {}) {
   window.requestAnimationFrame(() => {
     rendererHandle = mountThreeRenderer(viewport);
 
+    inputController = createPlayerInputController({
+      getCameraYaw: rendererHandle.getCameraYaw,
+      onInput: onPlayerInput,
+    });
+
     if (pendingSnapshot) {
       rendererHandle.updateWorldSnapshot(pendingSnapshot);
     }
@@ -52,6 +59,7 @@ export function createGameScreen({ onJoinDungeon } = {}) {
     element: screen,
     setWorldSnapshot,
     dispose() {
+      inputController?.dispose();
       rendererHandle?.dispose();
     },
   };
