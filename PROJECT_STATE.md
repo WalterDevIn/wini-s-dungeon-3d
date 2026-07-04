@@ -6,56 +6,27 @@ Wini-s-dungeon-3d vPreliminar
 
 ## Hito implementado
 
-Hito 4 — Guest real + personaje default
+Hito 5 — Entrar a una sala 3D local
 
 ## Estado
 
-Cerrado con fix de Socket.IO en Codespaces.
-
-## Fixes aplicados
-
-### Hito 4 fix
-
-- `client/src/main.js` ya pasaba `onEnterAsGuest(displayName)` a `createMenuScreen`.
-- `client/src/screens/menuScreen.js` no estaba recibiendo ni llamando ese callback, por lo que el botón podía volver a comportarse como mensaje local.
-- Se corrigió `client/src/screens/menuScreen.js` para recibir `{ onEnterAsGuest }`.
-- Al apretar `Entrar como guest`, la pantalla ahora llama `onEnterAsGuest(nameInput.value)`.
-- El cliente envía el texto crudo al servidor; si está vacío o contiene solo espacios, la normalización a `Guest` queda en `server/src/auth/accountService.js`.
-- El botón queda deshabilitado hasta recibir `SESSION_CREATED`, evitando intentos antes de que exista sesión conectada.
-
-### Hito 4.2 fix
-
-- `client/src/net/socketClient.js` ya no depende únicamente de `http://localhost:3000`.
-- En local, sigue usando `http://localhost:3000`.
-- Si existe `VITE_SERVER_URL`, usa ese valor explícito.
-- Si el cliente corre en Codespaces/GitHub forwarded ports con hostname `.github.dev`, deriva la URL del servidor cambiando el puerto visible `5173` por `3000` en el hostname.
-- Esto evita que el navegador intente conectarse al `localhost` de la máquina del usuario cuando la app está abierta desde un túnel de Codespaces.
-
-### Fix CORS/polling Codespaces
-
-- La consola del navegador mostraba bloqueo CORS sobre `/socket.io/?EIO=4&transport=polling` contra el puerto `3000` reenviado.
-- El cliente Socket.IO ahora fuerza `transports: ['websocket']`.
-- Esto evita el transporte inicial `polling` por XHR, que en Codespaces puede recibir una redirección `302` sin headers CORS.
-- El flujo sigue usando Socket.IO; no se agregó REST, mundo, sala 3D ni gameplay.
+Cerrado.
 
 ## Qué funciona
 
 - Existe estructura mínima separada de cliente y servidor.
 - Desde la raíz, `npm install` instala el workspace del cliente, el workspace del servidor y las dependencias del proyecto.
 - Desde la raíz, `npm run dev` levanta cliente y servidor en paralelo.
-- El Hito 3 sigue funcionando: el cliente se conecta al servidor y recibe `SESSION_CREATED`.
-- El cliente muestra `Conectado como sesión <sessionId>`.
-- Al apretar `Entrar como guest`, el cliente envía `ENTER_AS_GUEST` al servidor con el nombre escrito.
-- El servidor recibe `ENTER_AS_GUEST`.
-- El servidor normaliza nombres vacíos o con espacios a `Guest`.
-- El servidor crea una account en memoria con `type: "guest"` y `displayName` normalizado.
-- El servidor asocia la account guest a la sesión en memoria.
-- El servidor crea o recupera un personaje default asociado a esa account.
-- El servidor emite `GUEST_READY` con `{ account }`.
-- El servidor emite `CHARACTER_READY` con `{ character }`.
-- El cliente renderiza la pantalla de personaje usando el payload recibido por `CHARACTER_READY`.
+- El flujo de Hito 4 sigue funcionando: el cliente se conecta al servidor, entra como guest y recibe personaje default.
 - El cliente muestra `Personaje listo`.
 - El cliente muestra `Humano Guerrero`.
+- La pantalla de personaje muestra una acción visible `Entrar a la mazmorra`.
+- Al apretar `Entrar a la mazmorra`, el cliente monta una escena Three.js local.
+- La escena 3D local contiene piso, cuatro paredes, cilindro del jugador, luz básica y cámara perspective.
+- La cámara rota con arrastre horizontal del mouse sobre la escena.
+- La escena 3D no emite `JOIN_DUNGEON`.
+- La escena 3D no usa `WORLD_SNAPSHOT`.
+- La escena 3D no depende de mundo servidor.
 
 ## Cómo probar
 
@@ -73,49 +44,47 @@ Verificar:
 3. El cliente informa la URL de Vite, por defecto `http://localhost:5173`, o la URL reenviada de Codespaces.
 4. Al abrir el cliente se ve `Wini-s-dungeon-3d vPreliminar`.
 5. El cliente muestra `Conectado como sesión <sessionId>`.
-6. En DevTools no debe aparecer el error CORS de `transport=polling`.
-7. Escribir `Walter` en el input.
-8. Apretar `Entrar como guest`.
-9. En consola del servidor aparece `ENTER_AS_GUEST received: <sessionId>`.
-10. En consola del servidor aparece `Guest account created: <accountId> (Walter)`.
-11. En consola del servidor aparece `Default character ready: <characterId> (Walter)`.
-12. El cliente muestra `Personaje listo`.
-13. El cliente muestra `Humano Guerrero`.
-14. Recargar la pestaña.
-15. Dejar el input vacío o con espacios.
-16. Apretar `Entrar como guest`.
-17. En consola del servidor aparece `Guest account created: <accountId> (Guest)`.
-18. El cliente sigue mostrando un personaje válido.
-19. No aparece sala 3D, mundo, snapshot, movimiento, inventario, combate ni multiplayer jugable.
+6. Escribir `Walter` en el input.
+7. Apretar `Entrar como guest`.
+8. El cliente muestra `Personaje listo`.
+9. El cliente muestra `Humano Guerrero`.
+10. El cliente muestra el botón `Entrar a la mazmorra`.
+11. Apretar `Entrar a la mazmorra`.
+12. Verificar que aparece una escena 3D.
+13. Verificar visualmente piso, cuatro paredes, cilindro del jugador, luz básica y cámara.
+14. Arrastrar el mouse horizontalmente sobre la escena y verificar que la cámara rota alrededor de la sala.
+15. Confirmar que el servidor no imprime ni recibe `JOIN_DUNGEON`.
+16. Confirmar que el cliente no espera ni procesa `WORLD_SNAPSHOT`.
+17. Confirmar que no hay movimiento del jugador todavía.
+18. Confirmar que no aparece inventario, combate, loot, enemigos, dungeon procedural ni multiplayer jugable.
 
 ## Archivos relevantes
 
+- `client/package.json`
 - `client/src/main.js`
-- `client/src/net/socketClient.js`
-- `client/src/screens/menuScreen.js`
 - `client/src/screens/characterSelectScreen.js`
-- `client/src/ui/screenRouter.js`
-- `server/src/net/socketServer.js`
-- `server/src/net/protocol.js`
-- `server/src/auth/sessionService.js`
-- `server/src/auth/accountService.js`
-- `server/src/characters/characterService.js`
+- `client/src/screens/gameScreen.js`
+- `client/src/render/threeRenderer.js`
+- `client/src/render/threeSceneFactory.js`
+- `client/src/render/threeCameraController.js`
 
 ## Pendientes / limitaciones
 
-- No hay login real.
-- No hay password, OAuth, cookies ni JWT.
-- No hay base de datos ni persistencia en disco.
-- No hay selección real entre varios personajes.
-- No hay creación configurable de personaje.
 - No hay mundo servidor.
-- No hay sala 3D.
+- No hay `JOIN_DUNGEON`.
+- No hay `DUNGEON_JOINED`.
+- No hay `WORLD_SNAPSHOT`.
 - No hay snapshots.
-- No hay movimiento.
+- No hay movimiento servidor.
+- No hay input de movimiento.
+- No hay sincronización de posición.
 - No hay multiplayer jugable.
-- No hay Three.js.
-- No hay gameplay.
+- No hay enemigos.
+- No hay inventario.
+- No hay combate.
+- No hay loot.
+- No hay dungeon procedural.
 
 ## Próximo hito sugerido
 
-Hito 5 — Entrar a una sala 3D local.
+Hito 6 — Mundo servidor en memoria.
