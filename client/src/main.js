@@ -29,9 +29,16 @@ socketClient = connectToServer({
   onCharacterReady(character) {
     mountScreen(createCharacterSelectScreen(character, {
       onEnterDungeon() {
-        mountScreen(createGameScreen());
+        mountScreen(createGameScreen({
+          onJoinDungeon() {
+            socketClient?.joinDungeon();
+          },
+        }));
       },
     }));
+  },
+  onWorldSnapshot(snapshot) {
+    activeScreen?.setWorldSnapshot?.(snapshot);
   },
   onDisconnect() {
     menuScreen.setDisconnected();
