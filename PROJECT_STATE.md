@@ -10,9 +10,11 @@ Hito 4 — Guest real + personaje default
 
 ## Estado
 
-Cerrado con fix de botón guest.
+Cerrado con fix 4.2 de URL Socket.IO.
 
-## Fix aplicado
+## Fixes aplicados
+
+### Hito 4 fix
 
 - `client/src/main.js` ya pasaba `onEnterAsGuest(displayName)` a `createMenuScreen`.
 - `client/src/screens/menuScreen.js` no estaba recibiendo ni llamando ese callback, por lo que el botón podía volver a comportarse como mensaje local.
@@ -20,6 +22,14 @@ Cerrado con fix de botón guest.
 - Al apretar `Entrar como guest`, la pantalla ahora llama `onEnterAsGuest(nameInput.value)`.
 - El cliente envía el texto crudo al servidor; si está vacío o contiene solo espacios, la normalización a `Guest` queda en `server/src/auth/accountService.js`.
 - El botón queda deshabilitado hasta recibir `SESSION_CREATED`, evitando intentos antes de que exista sesión conectada.
+
+### Hito 4.2 fix
+
+- `client/src/net/socketClient.js` ya no depende únicamente de `http://localhost:3000`.
+- En local, sigue usando `http://localhost:3000`.
+- Si existe `VITE_SERVER_URL`, usa ese valor explícito.
+- Si el cliente corre en Codespaces/GitHub forwarded ports con hostname `.github.dev`, deriva la URL del servidor cambiando el puerto visible `5173` por `3000` en el hostname.
+- Esto evita que el navegador intente conectarse al `localhost` de la máquina del usuario cuando la app está abierta desde un túnel de Codespaces.
 
 ## Qué funciona
 
@@ -53,7 +63,7 @@ Verificar:
 
 1. La instalación termina sin errores.
 2. El servidor informa en consola que está corriendo en `http://localhost:3000`.
-3. El cliente informa la URL de Vite, por defecto `http://localhost:5173`.
+3. El cliente informa la URL de Vite, por defecto `http://localhost:5173`, o la URL reenviada de Codespaces.
 4. Al abrir el cliente se ve `Wini-s-dungeon-3d vPreliminar`.
 5. El cliente muestra `Conectado como sesión <sessionId>`.
 6. Escribir `Walter` en el input.
