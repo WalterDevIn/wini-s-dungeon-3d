@@ -13,7 +13,7 @@ function getCharacterKindLabel(character) {
   return `${race} ${characterClass}`;
 }
 
-export function createCharacterSelectScreen(character) {
+export function createCharacterSelectScreen(character, { onEnterDungeon } = {}) {
   const screen = document.createElement('section');
   screen.style.display = 'grid';
   screen.style.gap = '12px';
@@ -33,11 +33,14 @@ export function createCharacterSelectScreen(character) {
   name.textContent = `Nombre: ${character.name}`;
   name.style.margin = '0';
 
-  const note = document.createElement('p');
-  note.textContent = 'Entrada a la mazmorra pendiente para el próximo hito.';
-  note.style.margin = '0';
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.textContent = 'Entrar a la mazmorra';
+  button.addEventListener('click', () => {
+    onEnterDungeon?.();
+  });
 
-  screen.append(title, kind, name, note);
+  screen.append(title, kind, name, button);
 
   return screen;
 }
