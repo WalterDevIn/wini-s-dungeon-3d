@@ -10,8 +10,24 @@ const serverEvents = Object.freeze({
   characterReady: 'CHARACTER_READY',
 });
 
+function getCodespacesServerUrl() {
+  const { protocol, hostname } = window.location;
+
+  if (!hostname.endsWith('.github.dev')) {
+    return null;
+  }
+
+  const serverHostname = hostname.replace('-5173.', '-3000.');
+
+  if (serverHostname === hostname) {
+    return null;
+  }
+
+  return `${protocol}//${serverHostname}`;
+}
+
 function getServerUrl() {
-  return import.meta.env.VITE_SERVER_URL || 'http://localhost:3000';
+  return import.meta.env.VITE_SERVER_URL || getCodespacesServerUrl() || 'http://localhost:3000';
 }
 
 export function connectToServer({
