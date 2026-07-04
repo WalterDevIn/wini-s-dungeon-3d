@@ -33,6 +33,9 @@ socketClient = connectToServer({
           onJoinDungeon() {
             socketClient?.joinDungeon();
           },
+          onPlayerInput(input) {
+            socketClient?.sendPlayerInput(input);
+          },
         }));
       },
     }));
