@@ -1,0 +1,428 @@
+WINI-S-DUNGEON-3D — vPreliminar
+Documento de hitos para el primer objetivo técnico
+
+Propósito de vPreliminar:
+Esta versión no es todavía la V1 jugable. Su objetivo es plantear la estructura técnica y mostrar la idea mínima funcionando.
+
+Objetivo final:
+
+- Abro dos pestañas.
+- Ambas entran como guest.
+- Cada una controla un cilindro.
+- Los dos cilindros se ven en la misma sala.
+- El servidor decide la posición.
+- El cliente solo renderiza el estado recibido.
+
+Regla general:
+No se pasa al siguiente hito si el actual no se puede probar manualmente.
+
+Queda fuera de vPreliminar:
+
+- Combate.
+- Loot.
+- Dungeon procedural.
+- Cadáver.
+- Inventario.
+- Clases reales.
+- SQLite obligatorio.
+- Ciudad.
+- Tiendas.
+- Mapa del mundo.
+- Enemigos.
+- Jefe.
+- Umbral.
+
+La idea de vPreliminar es probar la tubería:
+
+client input -> socket -> server world -> snapshot -> client render
+
+
+HITO 1 — Proyecto arranca
+
+Objetivo:
+Comprobar que la estructura base vive.
+
+Estructura mínima:
+
+wini-s-dungeon-3d/
+  package.json
+  PROJECT_STATE.md
+
+  client/
+    package.json
+    index.html
+    src/
+      main.js
+
+  server/
+    package.json
+    src/
+      index.js
+
+Debe poder ejecutarse:
+
+npm install
+npm run dev
+
+Resultado probado:
+
+- Servidor corriendo.
+- Cliente abre en navegador.
+- Pantalla inicial visible.
+
+Criterio de éxito:
+
+Puedo abrir el cliente y ver una pantalla que diga:
+Wini-s-dungeon-3d vPreliminar
+
+Notas:
+Todavía no hay sockets.
+Todavía no hay 3D.
+
+
+HITO 2 — Pantalla de entrada guest
+
+Objetivo:
+Probar la primera pantalla antes de entrar a simulación.
+
+Pantalla esperada:
+
+Wini-s-dungeon-3d vPreliminar
+
+Nombre:
+[ input ]
+
+[ Entrar como guest ]
+
+Al apretar el botón, todavía puede mostrar un mensaje local:
+
+Entrando como guest: Walter
+
+Archivos esperados:
+
+client/src/main.js
+client/src/screens/menuScreen.js
+client/src/ui/screenRouter.js
+
+Resultado probado:
+
+- Puedo escribir un nombre.
+- Puedo apretar Entrar como guest.
+- La pantalla responde.
+
+Criterio de éxito:
+
+La UI previa existe y tiene un flujo claro.
+
+Notas:
+Todavía no hay servidor conectado al botón.
+
+
+HITO 3 — Conexión cliente-servidor
+
+Objetivo:
+Probar que el cliente habla con el servidor.
+
+Se agrega Socket.IO.
+
+Flujo:
+
+1. Cliente abre.
+2. Cliente conecta al servidor.
+3. Servidor crea sessionId.
+4. Servidor responde SESSION_CREATED.
+5. Cliente muestra: Conectado como sesión X.
+
+Mensajes/eventos mínimos:
+
+connect
+SESSION_CREATED
+
+Archivos esperados:
+
+server/src/net/socketServer.js
+server/src/net/protocol.js
+client/src/net/socketClient.js
+
+Resultado probado:
+
+- Abro navegador.
+- Veo estado: conectado.
+- En consola del servidor veo una conexión nueva.
+
+Criterio de éxito:
+
+El cliente no está aislado. Existe comunicación real con servidor.
+
+Notas:
+Todavía no hay personaje.
+Todavía no hay mundo.
+
+
+HITO 4 — Guest real + personaje default
+
+Objetivo:
+No hacer login falso suelto. Hacer modo guest estructurado.
+
+Flujo:
+
+1. Cliente escribe nombre.
+2. Cliente manda ENTER_AS_GUEST.
+3. Servidor crea account guest.
+4. Servidor crea o recupera personaje default.
+5. Servidor responde GUEST_READY.
+6. Cliente muestra personaje: Humano Guerrero.
+
+Mensaje cliente:
+
+ENTER_AS_GUEST
+
+Eventos servidor:
+
+GUEST_READY
+CHARACTER_READY
+
+Datos mínimos:
+
+account:
+  id
+  type: guest
+  displayName
+
+character:
+  id
+  accountId
+  name
+  race: human
+  class: warrior
+  background: generic
+
+Archivos esperados:
+
+server/src/auth/sessionService.js
+server/src/auth/accountService.js
+server/src/characters/characterService.js
+client/src/screens/characterSelectScreen.js
+
+Resultado probado:
+
+- Escribo nombre.
+- Entro como guest.
+- Veo mi personaje default.
+
+Criterio de éxito:
+
+Antes de entrar al mundo, el servidor ya sabe quién soy y qué personaje uso.
+
+Notas:
+Persistencia puede ser en memoria en este hito. SQLite puede entrar después si se decide.
+
+
+HITO 5 — Entrar a una sala 3D local
+
+Objetivo:
+Probar Three.js sin multiplayer todavía.
+
+Flujo:
+
+1. Cliente tiene personaje.
+2. Apreta Entrar a la mazmorra.
+3. Se muestra una sala 3D.
+4. Se ve un cilindro propio.
+5. Puedo rotar cámara.
+
+Elementos visuales:
+
+- Piso.
+- Cuatro paredes.
+- Cilindro del jugador.
+- Luz básica.
+- Cámara.
+
+Archivos esperados:
+
+client/src/screens/gameScreen.js
+client/src/render/threeRenderer.js
+client/src/render/threeSceneFactory.js
+client/src/render/threeCameraController.js
+
+Resultado probado:
+
+- Puedo entrar a una sala 3D.
+- Veo mi cilindro.
+- La cámara funciona.
+
+Criterio de éxito:
+
+El cliente puede representar visualmente la idea.
+
+Notas:
+Todavía el movimiento puede no existir.
+Todavía no hay servidor moviendo entidades.
+
+
+HITO 6 — Mundo servidor en memoria
+
+Objetivo:
+Crear la simulación mínima del servidor.
+
+El servidor debe tener un world con entidades.
+
+Entidad mínima:
+
+entity:
+  id
+  characterId
+  position: { x, y, z }
+  rotation
+
+Flujo:
+
+1. Cliente manda JOIN_DUNGEON.
+2. Servidor crea o usa world instance.
+3. Servidor crea entidad para el personaje.
+4. Servidor responde DUNGEON_JOINED.
+5. Servidor empieza a mandar WORLD_SNAPSHOT.
+6. Cliente renderiza snapshot.
+
+Mensaje cliente:
+
+JOIN_DUNGEON
+
+Eventos servidor:
+
+DUNGEON_JOINED
+WORLD_SNAPSHOT
+
+Archivos esperados:
+
+server/src/world/worldInstanceService.js
+server/src/world/ecsWorld.js
+server/src/world/systems/snapshotSystem.js
+
+Resultado probado:
+
+- Entro a la sala.
+- Mi cilindro no aparece porque el cliente lo inventó.
+- Aparece porque el servidor lo mandó en snapshot.
+
+Criterio de éxito:
+
+El cliente ya no crea la verdad del mundo. Solo renderiza lo que manda el servidor.
+
+Nota crítica:
+Este es el punto donde empieza la arquitectura real del juego.
+
+
+HITO 7 — Input cliente, movimiento servidor
+
+Objetivo:
+Demostrar autoridad del servidor.
+
+Flujo:
+
+1. Cliente detecta WASD.
+2. Cliente manda PLAYER_INPUT.
+3. Servidor recibe input.
+4. Servidor actualiza posición.
+5. Servidor manda snapshot.
+6. Cliente renderiza nueva posición.
+
+Mensaje cliente:
+
+PLAYER_INPUT
+
+Ejemplo de payload:
+
+{
+  forward: true,
+  back: false,
+  left: false,
+  right: true,
+  cameraYaw: 1.57
+}
+
+Sistemas servidor:
+
+input buffer
+movementSystem
+snapshotSystem
+
+Resultado probado:
+
+- Aprieto W.
+- El cliente manda input.
+- El servidor mueve.
+- El snapshot vuelve.
+- El cilindro se mueve.
+
+Criterio de éxito:
+
+Si el servidor no actualiza posición, el cliente no se mueve.
+
+Esta es la prueba de que el servidor decide.
+
+
+HITO 8 — Dos pestañas, dos jugadores
+
+Objetivo:
+Cerrar vPreliminar.
+
+Flujo:
+
+1. Abro pestaña A.
+2. Entro como guest A.
+3. Entro al mundo.
+4. Abro pestaña B.
+5. Entro como guest B.
+6. Entro al mundo.
+7. Ambas están en la misma world instance.
+8. Cada una ve dos cilindros.
+9. Cada una controla solo su cilindro.
+10. Ambas reciben el mismo snapshot.
+
+Resultado probado:
+
+- Muevo jugador A.
+- La pestaña B ve moverse a A.
+- Muevo jugador B.
+- La pestaña A ve moverse a B.
+
+Criterio de éxito final:
+
+- Abro dos pestañas.
+- Ambas entran como guest.
+- Cada una controla un cilindro.
+- Los dos cilindros se ven en la misma sala.
+- El servidor decide la posición.
+- El cliente solo renderiza el estado recibido.
+
+
+HOJA DE RUTA COMPACTA
+
+1. Proyecto arranca.
+2. Pantalla guest local.
+3. Socket cliente-servidor.
+4. Guest real + personaje default.
+5. Sala 3D local.
+6. World servidor + snapshots.
+7. Input cliente + movimiento servidor.
+8. Dos pestañas sincronizadas.
+
+
+CRITERIO DE CIERRE DE vPreliminar
+
+vPreliminar queda cerrada cuando:
+
+- Existen cliente y servidor separados.
+- Existe entrada guest estructurada.
+- Existe personaje default Humano Guerrero.
+- Existe una sala 3D simple.
+- Existe un world servidor en memoria.
+- El servidor emite snapshots.
+- El cliente renderiza snapshots.
+- El cliente manda input.
+- El servidor decide la posición.
+- Dos pestañas ven dos cilindros sincronizados.
+
+Después de este punto recién corresponde pasar a definir e implementar la V1 jugable.
