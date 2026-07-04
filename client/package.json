@@ -1,0 +1,12 @@
+{
+  "name": "wini-s-dungeon-3d-client",
+  "version": "0.0.0-vpreliminar",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0 --port 5173"
+  },
+  "devDependencies": {
+    "vite": "^7.0.0"
+  }
+}
