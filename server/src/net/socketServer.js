@@ -69,11 +69,26 @@ function attachSocketServer(httpServer) {
       }, snapshotIntervalMs);
     });
 
+    socket.on(clientEvents.playerInput, (input) => {
+      if (!activeCharacter) {
+        return;
+      }
+
+      const result = worldInstanceService.applyPlayerInput(activeCharacter, input);
+
+      if (!result) {
+        return;
+      }
+
+      socket.emit(serverEvents.worldSnapshot, result.snapshot);
+    });
+
     socket.on('disconnect', () => {
       if (snapshotInterval) {
         clearInterval(snapshotInterval);
       }
 
+      worldInstanceService.leaveDungeon(activeCharacter);
       sessionService.removeSession(sessionId);
     });
   });
