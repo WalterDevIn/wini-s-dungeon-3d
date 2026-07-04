@@ -1,4 +1,4 @@
-export function createMenuScreen({ onEnterAsGuest } = {}) {
+export function createMenuScreen() {
   const screen = document.createElement('section');
   screen.style.display = 'grid';
   screen.style.gap = '12px';
@@ -37,8 +37,8 @@ export function createMenuScreen({ onEnterAsGuest } = {}) {
   message.style.margin = '0';
 
   button.addEventListener('click', () => {
-    message.textContent = 'Entrando como guest...';
-    onEnterAsGuest?.(nameInput.value);
+    const displayName = nameInput.value.trim() || 'Guest';
+    message.textContent = `Entrando como guest: ${displayName}`;
   });
 
   screen.append(title, connectionStatus, label, button, message);
