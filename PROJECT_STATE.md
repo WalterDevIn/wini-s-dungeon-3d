@@ -10,7 +10,7 @@ Hito 4 — Guest real + personaje default
 
 ## Estado
 
-Cerrado con fix 4.2 de URL Socket.IO.
+Cerrado con fix de Socket.IO en Codespaces.
 
 ## Fixes aplicados
 
@@ -30,6 +30,13 @@ Cerrado con fix 4.2 de URL Socket.IO.
 - Si existe `VITE_SERVER_URL`, usa ese valor explícito.
 - Si el cliente corre en Codespaces/GitHub forwarded ports con hostname `.github.dev`, deriva la URL del servidor cambiando el puerto visible `5173` por `3000` en el hostname.
 - Esto evita que el navegador intente conectarse al `localhost` de la máquina del usuario cuando la app está abierta desde un túnel de Codespaces.
+
+### Fix CORS/polling Codespaces
+
+- La consola del navegador mostraba bloqueo CORS sobre `/socket.io/?EIO=4&transport=polling` contra el puerto `3000` reenviado.
+- El cliente Socket.IO ahora fuerza `transports: ['websocket']`.
+- Esto evita el transporte inicial `polling` por XHR, que en Codespaces puede recibir una redirección `302` sin headers CORS.
+- El flujo sigue usando Socket.IO; no se agregó REST, mundo, sala 3D ni gameplay.
 
 ## Qué funciona
 
@@ -66,19 +73,20 @@ Verificar:
 3. El cliente informa la URL de Vite, por defecto `http://localhost:5173`, o la URL reenviada de Codespaces.
 4. Al abrir el cliente se ve `Wini-s-dungeon-3d vPreliminar`.
 5. El cliente muestra `Conectado como sesión <sessionId>`.
-6. Escribir `Walter` en el input.
-7. Apretar `Entrar como guest`.
-8. En consola del servidor aparece `ENTER_AS_GUEST received: <sessionId>`.
-9. En consola del servidor aparece `Guest account created: <accountId> (Walter)`.
-10. En consola del servidor aparece `Default character ready: <characterId> (Walter)`.
-11. El cliente muestra `Personaje listo`.
-12. El cliente muestra `Humano Guerrero`.
-13. Recargar la pestaña.
-14. Dejar el input vacío o con espacios.
-15. Apretar `Entrar como guest`.
-16. En consola del servidor aparece `Guest account created: <accountId> (Guest)`.
-17. El cliente sigue mostrando un personaje válido.
-18. No aparece sala 3D, mundo, snapshot, movimiento, inventario, combate ni multiplayer jugable.
+6. En DevTools no debe aparecer el error CORS de `transport=polling`.
+7. Escribir `Walter` en el input.
+8. Apretar `Entrar como guest`.
+9. En consola del servidor aparece `ENTER_AS_GUEST received: <sessionId>`.
+10. En consola del servidor aparece `Guest account created: <accountId> (Walter)`.
+11. En consola del servidor aparece `Default character ready: <characterId> (Walter)`.
+12. El cliente muestra `Personaje listo`.
+13. El cliente muestra `Humano Guerrero`.
+14. Recargar la pestaña.
+15. Dejar el input vacío o con espacios.
+16. Apretar `Entrar como guest`.
+17. En consola del servidor aparece `Guest account created: <accountId> (Guest)`.
+18. El cliente sigue mostrando un personaje válido.
+19. No aparece sala 3D, mundo, snapshot, movimiento, inventario, combate ni multiplayer jugable.
 
 ## Archivos relevantes
 
