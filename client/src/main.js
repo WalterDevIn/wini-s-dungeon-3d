@@ -1,3 +1,6 @@
+import { createMenuScreen } from './screens/menuScreen.js';
+import { renderScreen } from './ui/screenRouter.js';
+
 const app = document.querySelector('#app');
 
-app.textContent = 'Wini-s-dungeon-3d vPreliminar';
+renderScreen(app, createMenuScreen());
