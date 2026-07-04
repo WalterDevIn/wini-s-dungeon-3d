@@ -1,0 +1,989 @@
+CRITERIOS PROPUESTOS PARA LA V1
+Dungeon cooperativo inspirado en DnD
+
+Nota:
+Esta lista no es un contrato definitivo. Es una base larga para revisar, tachar, mover o recortar.
+La idea central de la V1 es validar el núcleo: entrar con identidad, elegir personaje, explorar una mazmorra compartida, recibir daño, morir, dejar cadáver y poder volver a encontrarlo/lootearlo.
+
+
+1. OBJETIVO CENTRAL DE LA V1
+
+La V1 debe permitir:
+
+- Entrar con una identidad simple.
+- Crear o elegir un personaje.
+- Entrar directamente a una mazmorra.
+- Explorar una mazmorra 3D simple.
+- Ver a otros jugadores conectados.
+- Caminar y observar el espacio.
+- Encontrar salas conectadas.
+- Encontrar enemigos.
+- Recibir daño.
+- Morir.
+- Dejar un cadáver.
+- Volver a entrar.
+- Encontrar el cadáver.
+- Lootear el cadáver.
+- Llegar a una sala final.
+- Cruzar un umbral místico hacia otra profundidad o piso.
+
+Frase de cierre:
+La V1 termina cuando dos jugadores pueden entrar con personajes persistentes a una mazmorra generada, explorar salas, pelear, lootear, descansar, morir, dejar cadáver recuperable y cruzar un umbral hacia una profundidad mayor.
+
+
+2. PRE-SIMULACIÓN: MENÚ, LOGIN Y PERSONAJE
+
+Debe existir una pantalla inicial.
+
+Debe existir un login simple.
+
+El login puede ser:
+- Usuario + contraseña.
+- Usuario + código.
+- Identidad local persistente, si se quiere prototipar rápido.
+
+No hace falta en V1:
+- Recuperación de contraseña.
+- Email real.
+- OAuth.
+- Perfil completo de usuario.
+
+Debe permitirme ver mis personajes creados.
+
+Debe permitirme crear un personaje.
+
+Debe existir un botón “Crear personaje”.
+
+En la primera etapa de la V1, ese botón puede crear automáticamente:
+
+- Raza: Humano.
+- Clase: Guerrero.
+- Trasfondo: Genérico.
+- Nombre: elegido por input simple o generado temporalmente.
+
+Más adelante, dentro de la misma V1, la creación debería permitir elegir:
+
+- Clase: Guerrero, Mago o Clérigo.
+- Raza: Humano o Elfo.
+- Trasfondo: Genérico.
+
+Debe permitirme seleccionar un personaje creado.
+
+Debe permitirme entrar a la simulación con el personaje seleccionado.
+
+Debe impedir entrar sin personaje seleccionado.
+
+El personaje mínimo debería tener:
+
+- ID.
+- ID de cuenta.
+- Nombre.
+- Raza.
+- Clase.
+- Trasfondo.
+- Vida máxima.
+- Vida actual.
+- Inventario mínimo.
+- Estado: vivo / muerto.
+- Ubicación persistente opcional.
+- Fecha de creación.
+
+
+3. ENTRADA A LA SIMULACIÓN
+
+Al entrar, el juego debe enviarme directamente a la mazmorra.
+
+No debe haber ciudad en V1.
+
+No debe haber mapa del mundo en V1.
+
+Debe crear o unirse a una instancia de mazmorra.
+
+Si ya existe una instancia activa de esa mazmorra, el jugador entra ahí.
+
+Si no existe instancia activa, se crea una nueva.
+
+Debe spawnear al personaje en una sala inicial.
+
+Debe cargar el estado del personaje desde el servidor.
+
+Debe mostrar el mundo 3D.
+
+Debe mostrar mi personaje.
+
+Debe mostrar otros jugadores si están dentro de la misma instancia.
+
+Debe sincronizar movimiento básico entre jugadores.
+
+Debe mostrar nombre o identificador simple sobre cada jugador.
+
+Debe diferenciar visualmente mi personaje de otros.
+
+Debe permitir salir al menú.
+
+Debe manejar desconexión sin romper la simulación.
+
+
+4. MULTIJUGADOR
+
+La V1 debe proyectarse como multijugador desde el inicio.
+
+Debe haber servidor.
+
+Debe haber instancia compartida.
+
+Dos jugadores deben poder estar en la misma mazmorra.
+
+Cada jugador debe ver al otro.
+
+Cada jugador debe ver movimientos del otro.
+
+Cada jugador debe ver daño, muerte y acciones relevantes del otro.
+
+Cada jugador debe poder participar en descanso compartido.
+
+Cada jugador debe poder lootear.
+
+Las acciones importantes deben resolverse en servidor.
+
+El cliente no debería decidir por sí solo:
+- Si golpeó.
+- Si mató.
+- Si recibió daño.
+- Si murió.
+- Si lootió.
+- Si descansó.
+- Si cruzó el umbral.
+
+Forma simple de entrada multijugador:
+- Entrar a la mazmorra activa.
+- O crear sala / unirse por código, si se decide agregarlo.
+
+
+5. CÁMARA, MOVIMIENTO Y CONTROL
+
+Debe haber cámara 3D.
+
+Debe poder rotar la cámara con el mouse.
+
+Debe poder observar la sala.
+
+Debe haber una dirección frontal definida por la cámara.
+
+Al presionar avanzar, el personaje debe caminar hacia donde mira la cámara.
+
+Debe haber movimiento lateral y hacia atrás.
+
+Debe haber colisión básica contra paredes.
+
+Debe haber colisión básica contra muebles sólidos, si existen.
+
+Debe haber una altura de cámara cómoda.
+
+Debe haber una forma simple de saber dónde está mi personaje.
+
+Debe poder verse el piso, las paredes, las entradas y los obstáculos.
+
+Debe evitarse que la cámara arruine la lectura del espacio.
+
+Opción recomendada:
+- Cámara en tercera persona simple.
+- Movimiento relativo a la cámara.
+- Tecla para recentrar cámara detrás del jugador.
+
+
+6. REPRESENTACIÓN VISUAL MÍNIMA
+
+Todo puede estar representado por figuras geométricas simples.
+
+Jugador:
+- Cilindro.
+
+Otros jugadores:
+- Cilindros diferenciados.
+
+Rata:
+- Media esfera baja.
+
+Humanoide:
+- Cilindro enemigo.
+
+Dragón débil:
+- Gran media esfera.
+- Cilindro chato.
+- O cuerpo compuesto por formas simples.
+
+Paredes:
+- Bloques o cubos simples.
+
+Piso:
+- Plano o grilla.
+
+Puertas:
+- Rectángulos verticales.
+
+Cofres:
+- Cajas rectangulares.
+
+Cadáver:
+- Rectángulo, cápsula o bloque plano claramente distinto.
+
+Muebles:
+- Cubos, cilindros y formas simples.
+
+Umbral:
+- Arco.
+- Anillo.
+- Portal plano.
+- Marco brillante.
+- Forma geométrica claramente mística.
+
+Puede usarse ASCII como marca visual secundaria:
+
+- @ para jugador propio.
+- P para otros jugadores.
+- r para ratas.
+- H para humanoide.
+- D para dragón.
+- ? para loot no identificado.
+- + para curación.
+- X o calavera para cadáver.
+- > para umbral de descenso.
+
+
+7. MAZMORRA: ESTRUCTURA MÍNIMA
+
+La mazmorra debe estar hecha de salas conectadas.
+
+Una sala debería tener:
+
+- ID.
+- Tipo.
+- Tamaño.
+- Posición en el grafo de la mazmorra.
+- Entradas posibles.
+- Paredes.
+- Piso.
+- Spawn points.
+- Puntos para muebles.
+- Puntos para enemigos.
+- Estado.
+- Conexiones a otras salas.
+- Contenido generado.
+
+Tipos de sala V1:
+
+- Sala inicial.
+- Sala común.
+- Pasillo.
+- Sala de almacén/cofre.
+- Biblioteca.
+- Sala de descanso potencial.
+- Sala de combate.
+- Sala de jefe.
+- Sala de umbral.
+
+No hace falta que todas las salas sean visualmente únicas al inicio.
+
+
+8. GENERACIÓN DE LA MAZMORRA
+
+Para V1 conviene generación por salas predefinidas conectadas por grafo.
+
+No hace falta generación libre tipo Minecraft.
+
+Debe generar una mazmorra con sala inicial.
+
+Debe generar varias salas comunes.
+
+Debe generar pasillos que conecten salas.
+
+Debe generar una sala final grande.
+
+Debe colocar un umbral al final de la sala final.
+
+Debe asegurar que todas las salas importantes sean alcanzables.
+
+Debe evitar salas desconectadas.
+
+Debe guardar la instancia generada mientras esté activa.
+
+Debe poder reconstruir o persistir partes importantes si hay cadáveres.
+
+Estructura mínima posible:
+
+- Sala inicial.
+- 2 a 4 salas comunes.
+- 1 almacén/cofre.
+- 1 biblioteca opcional.
+- 1 sala de combate fuerte.
+- 1 sala final.
+- 1 umbral.
+
+Ejemplo de grafo simple:
+
+Inicio -> Común -> Bifurcación.
+Bifurcación -> Almacén.
+Bifurcación -> Biblioteca.
+Bifurcación -> Combate -> Jefe -> Umbral.
+
+
+9. TIPOS DE SALA
+
+9.1. Sala inicial
+
+Debe ser segura.
+
+Debe tener punto de aparición.
+
+Debe enseñar lectura del espacio.
+
+Puede tener una puerta o pasillo de salida.
+
+Puede tener texto contextual:
+- “Entrada derrumbada.”
+- “No hay vuelta atrás.”
+
+9.2. Sala común
+
+Puede estar vacía.
+
+Puede tener ratas.
+
+Puede tener humanoides.
+
+Puede tener muebles.
+
+Puede tener daño ambiental simple.
+
+Puede tener una puerta.
+
+Puede tener una bifurcación.
+
+Función:
+- Ritmo.
+- Transición.
+- Exploración.
+
+9.3. Almacén / cofre
+
+Debe tener uno o más contenedores.
+
+Debe permitir lootear.
+
+Debe poder contener suministros de descanso.
+
+Debe poder contener pociones.
+
+Debe poder contener equipo simple.
+
+Debe poder contener oro abstracto.
+
+Debe poder estar protegido por enemigos o no.
+
+9.4. Biblioteca
+
+Debe tener estanterías.
+
+Debe tener al menos un punto de interacción.
+
+Debe poder contener pergamino o conjuro.
+
+Debe permitir copiar magia si el personaje es Mago o Clérigo compatible.
+
+Debe requerir confirmación del compañero si el copiado consume tiempo común.
+
+Debe poder dar información simple de la mazmorra.
+
+Ejemplos de información:
+- “Hay ratas cerca.”
+- “El jefe es vulnerable a magia sagrada.”
+- “El umbral responde cuando la sala final queda limpia.”
+- “Esta sala puede sellarse para descansar.”
+
+9.5. Sala de combate
+
+Debe tener enemigos.
+
+Debe estar marcada como peligrosa mientras haya enemigos.
+
+Debe pasar a estado limpia cuando mueren los enemigos.
+
+Puede contener loot al terminar.
+
+9.6. Sala final / jefe
+
+Debe ser más grande.
+
+Debe tener entrada clara.
+
+Debe contener el dragón débil.
+
+Debe bloquear o condicionar el umbral hasta que el jefe muera.
+
+Debe tener recompensa.
+
+Debe tener el umbral al fondo o detrás.
+
+9.7. Sala de umbral
+
+Puede estar integrada a la sala final.
+
+Puede ser una sala separada.
+
+Debe tener una forma visual única.
+
+Debe permitir pasar al siguiente piso o profundidad.
+
+Debe requerir interacción.
+
+Idealmente requiere confirmación de ambos jugadores.
+
+
+10. PUERTAS, PASILLOS Y OCULTAMIENTO
+
+Debe haber conexiones entre salas.
+
+Algunas conexiones pueden ser pasillos abiertos.
+
+Algunas conexiones pueden tener puerta.
+
+Una puerta debe ocultar parcialmente lo que está del otro lado.
+
+Una puerta puede abrirse al interactuar.
+
+Una puerta puede empezar cerrada.
+
+No hace falta en V1:
+- Llaves complejas.
+- Animación compleja.
+- Destrucción de puertas.
+
+Para ocultamiento simple:
+- No renderizar salas no descubiertas.
+- Renderizar solo sala actual y salas conectadas visibles.
+- Usar puertas como frontera visual.
+- Al abrir puerta, revelar la sala siguiente.
+
+
+11. MUEBLES Y OBJETOS
+
+Debe poder colocar muebles aleatorios en salas.
+
+Muebles básicos:
+
+- Caja.
+- Mesa.
+- Silla.
+- Estantería.
+- Vela o antorcha.
+- Barril.
+- Cofre.
+- Cama o catre simple, opcional.
+
+Cada mueble puede tener categoría:
+
+- Decoración.
+- Sólido.
+- Interactuable.
+- Contenedor.
+- Fuente de luz.
+- Obstáculo.
+
+En V1 temprana, muchos muebles pueden ser solo decorativos.
+
+Conviene que el sistema ya soporte:
+- interactable: true / false.
+
+
+12. ACCIONES PRINCIPALES
+
+Acciones mínimas V1:
+
+- Moverse.
+- Rotar cámara.
+- Interactuar.
+- Atacar.
+- Conjurar.
+- Lootear.
+- Descansar.
+
+Interactuar debe servir para:
+
+- Abrir cofre.
+- Leer libro.
+- Activar umbral.
+- Cerrar sala.
+- Recoger objeto.
+- Iniciar descanso.
+- Iniciar copiado de conjuro.
+
+
+13. VIDA, DAÑO Y MUERTE
+
+El personaje debe tener vida máxima.
+
+El personaje debe tener vida actual.
+
+La UI debe mostrar vida.
+
+Ciertos eventos deben quitar vida.
+
+Los enemigos deben poder quitar vida.
+
+Opcional:
+- Trampas.
+- Daño ambiental simple.
+
+Al llegar a 0 vida, el personaje muere.
+
+Al morir, se crea un cadáver en la sala.
+
+El jugador muerto sale al menú o a pantalla de muerte.
+
+El personaje queda marcado como muerto o no disponible hasta recuperación, según decisión de diseño.
+
+El cadáver debe contener inventario mínimo o loot recuperable.
+
+Muerte mínima V1:
+- 0 HP -> muerto inmediatamente -> cadáver -> salida al menú.
+
+
+14. CADÁVER Y PERSISTENCIA
+
+Al morir, se guarda una entidad cadáver.
+
+El cadáver tiene dueño.
+
+El cadáver tiene ubicación.
+
+El cadáver tiene inventario recuperable.
+
+El cadáver se ve como rectángulo, cápsula o bloque.
+
+El cadáver puede ser inspeccionado.
+
+El cadáver puede ser looteado.
+
+Si el dueño lootea su propio cadáver, recupera sus cosas.
+
+Si otro jugador lo lootea, puede tomar cosas.
+
+Debe quedar claro visualmente que es un cadáver.
+
+Debe quedar persistido aunque el jugador salga.
+
+Versión mínima aceptable:
+- El cadáver persiste en la misma instancia mientras la mazmorra está activa.
+
+Versión fuerte V1:
+- Si la instancia se cierra, se guarda una sala recordada con el cadáver.
+- Esa sala puede reinsertarse en una futura generación.
+
+
+15. LOOT
+
+Debe existir inventario mínimo.
+
+Debe existir entidad looteable.
+
+Debe existir acción de lootear.
+
+Debe poder abrirse un cofre.
+
+Debe poder transferirse un ítem desde cofre/cadáver al personaje.
+
+Debe poder mostrarse una lista simple de objetos.
+
+Debe poder tomar todo o tomar uno.
+
+Ítems mínimos V1:
+
+- Poción de curación.
+- Suministro de descanso.
+- Oro abstracto.
+- Espada simple.
+- Bastón o foco simple.
+- Pergamino o conjuro.
+- Llave o gema opcional.
+
+
+16. DESCANSO
+
+Debe poder iniciarse descanso en una sala limpia.
+
+Debe fallar si hay enemigos vivos.
+
+Debe requerir sala segura o no amenazada.
+
+Debe requerir aceptación de ambos jugadores si hay más de uno.
+
+Puede consumir suministro de descanso.
+
+Debe recuperar vida.
+
+Debe recuperar recursos mágicos si existen.
+
+Debe marcar el paso de tiempo.
+
+Versión mínima:
+- Botón “Descansar” disponible en sala limpia.
+- Ambos aceptan.
+- Se consume 1 suministro.
+- Todos recuperan vida.
+
+
+17. COMBATE
+
+Debe haber enemigos.
+
+Los enemigos deben detectar jugadores cercanos.
+
+Los enemigos deben acercarse.
+
+Los enemigos deben atacar.
+
+El jugador debe poder atacar.
+
+El jugador debe poder conjurar si su clase lo permite.
+
+Los ataques deben quitar vida.
+
+Los enemigos deben morir.
+
+La sala debe detectar cuando ya no quedan enemigos.
+
+Debe haber feedback de daño.
+
+Acciones mínimas por clase:
+
+Guerrero:
+- Ataque cuerpo a cuerpo.
+
+Mago:
+- Ataque mágico a distancia.
+
+Clérigo:
+- Ataque simple.
+- Curación básica.
+
+No hace falta en V1:
+- Ventaja/desventaja.
+- Armadura compleja.
+- Iniciativa.
+- Turnos completos.
+
+
+18. ENEMIGOS
+
+18.1. Rata
+
+Vida baja.
+
+Daño bajo.
+
+Ataca en grupo.
+
+Persigue al jugador más cercano.
+
+Función:
+- Enseñar combate básico.
+
+18.2. Humanoide
+
+Vida media.
+
+Daño medio.
+
+Puede perseguir.
+
+Puede atacar cuerpo a cuerpo.
+
+Puede usar arma simple.
+
+Función:
+- Enemigo estándar.
+
+18.3. Dragón débil
+
+Vida alta.
+
+Daño alto.
+
+Ataque lento avisado.
+
+Puede tener ataque de área frontal.
+
+Protege el umbral.
+
+Función:
+- Jefe.
+
+Puede llamarse:
+- Dragón débil.
+- Cría de dragón.
+- Draco menor.
+- Dragón enfermo.
+- Dragón sellado.
+
+
+19. UI MÍNIMA DENTRO DE SIMULACIÓN
+
+Debe mostrar:
+
+- Barra de vida.
+- Nombre del personaje.
+- Clase.
+- Indicador de interacción.
+- Inventario simple.
+- Panel de loot.
+- Mensajes contextuales.
+- Estado de sala.
+- Prompt de descanso.
+- Prompt de copiar conjuro.
+- Prompt de umbral.
+- Pantalla de muerte.
+- Botón o acción para volver al menú.
+
+Estados de sala visibles o inferibles:
+
+- Peligrosa.
+- Limpia.
+- Segura.
+- Saqueada.
+
+
+20. ESTADOS DE SALA
+
+Cada sala puede tener estado:
+
+- No descubierta.
+- Descubierta.
+- Peligrosa.
+- Limpia.
+- Cerrada.
+- Segura.
+- Saqueada.
+
+Ejemplo:
+- Una sala con ratas empieza peligrosa.
+- Mueren las ratas: limpia.
+- Se cierran entradas: segura.
+- Se descansa: segura usada.
+- Se abre cofre: saqueada.
+
+
+21. CLASES Y RAZAS
+
+Clases V1:
+
+Guerrero:
+- Más vida.
+- Ataque cuerpo a cuerpo.
+- Menos mecánicas especiales.
+- Mejor clase inicial por defecto.
+
+Mago:
+- Ataque mágico.
+- Puede copiar conjuros arcanos.
+- Puede usar pergaminos mágicos.
+
+Clérigo:
+- Ataque simple.
+- Curación básica.
+- Puede copiar o aprender magia divina, si se decide.
+- Puede recuperar o proteger al grupo.
+
+Razas V1:
+
+Humano:
+- Raza por defecto.
+- Sin mecánicas especiales al inicio.
+
+Elfo:
+- Puede agregarse sin mecánica especial al inicio.
+- Más adelante puede tener visión, magia o precisión.
+
+Trasfondo V1:
+- Genérico.
+
+
+22. BIBLIOTECA Y COPIADO DE MAGIA
+
+La biblioteca puede contener:
+
+- Información.
+- Pergamino.
+- Libro.
+- Conjuro.
+
+Si un Mago o Clérigo compatible interactúa, puede iniciar copiado de magia.
+
+El copiado puede consumir:
+- Tiempo.
+- Suministro mágico.
+- Pergamino.
+- Seguridad de sala.
+
+Si el copiado afecta al grupo, el otro jugador debe aceptar.
+
+Mientras uno copia, el otro puede:
+- Esperar.
+- Descansar.
+- Vigilar.
+- Lootear la sala.
+- Prepararse.
+
+Para V1, el tiempo puede ser simulado con:
+- Barra de progreso.
+- Salto de tiempo.
+- Acción canalizada de corta duración.
+
+
+23. UMBRAL / PASO DE PROFUNDIDAD
+
+El umbral debe ser claramente místico.
+
+Debe estar al final de la sala final o después del jefe.
+
+Debe poder cruzarse mediante interacción.
+
+Debe indicar paso de profundidad o piso.
+
+Puede requerir que el jefe esté muerto.
+
+Puede requerir confirmación de ambos jugadores.
+
+Nombres posibles:
+
+- Umbral de Descenso.
+- Pozo Astral.
+- Arco de Tránsito.
+- Elevador Arcano.
+- Sello de Profundidad.
+- Puerta entre Pisos.
+- Nexo de Descenso.
+
+Nombre recomendado:
+- Umbral de Descenso.
+
+
+24. LO QUE NO EXIGE LA V1
+
+La V1 no exige:
+
+- Ciudad.
+- Tiendas.
+- Mapa del mundo.
+- NPCs.
+- Diálogos.
+- Físicas de muebles.
+- Destrucción de bloques.
+- Mover sillas o mesas.
+- Construcción tipo Minecraft.
+- Animaciones complejas.
+- Muchas clases.
+- Muchas razas.
+- Subclases.
+- Muchas mazmorras.
+- Biomas.
+- Economía.
+- Crafting.
+- Facciones.
+- Misiones.
+- Reglas completas de DnD.
+- Inventario profundo.
+- Equipamiento profundo.
+- IA avanzada.
+- Chat.
+
+
+25. ORDEN DE DESARROLLO SUGERIDO
+
+1. Servidor + cliente conectados.
+
+2. Login falso o simple.
+
+3. Crear personaje por defecto: Humano Guerrero.
+
+4. Entrar con ese personaje.
+
+5. Sala 3D única.
+
+6. Jugador representado como cilindro.
+
+7. Cámara y movimiento.
+
+8. Segundo jugador visible en la misma sala.
+
+9. Sincronización básica de movimiento.
+
+10. Generar varias salas conectadas.
+
+11. Navegar entre salas.
+
+12. Vida y daño de prueba.
+
+13. Muerte.
+
+14. Salida al menú al morir.
+
+15. Crear cadáver en sala.
+
+16. Volver a entrar y ver cadáver.
+
+17. Lootear cadáver.
+
+18. Agregar ratas.
+
+19. Combate básico.
+
+20. Agregar cofre / almacén.
+
+21. Lootear cofre.
+
+22. Agregar descanso.
+
+23. Agregar biblioteca.
+
+24. Agregar copiado o aprendizaje de conjuro.
+
+25. Agregar humanoide.
+
+26. Agregar sala final.
+
+27. Agregar dragón débil.
+
+28. Agregar umbral.
+
+29. Cruzar umbral hacia otra profundidad.
+
+30. Pulir feedback visual mínimo.
+
+
+26. CRITERIO DE TERMINADO DE LA V1
+
+La V1 está terminada cuando:
+
+- Puedo loguearme.
+- Puedo crear o elegir personaje.
+- Puedo entrar directo a la mazmorra.
+- Puedo ver una mazmorra 3D simple.
+- Puedo moverme y rotar cámara.
+- Puedo ver otro jugador.
+- Puedo recorrer salas conectadas.
+- Puedo encontrar enemigos.
+- Puedo combatir.
+- Puedo recibir daño.
+- Puedo morir.
+- Mi cadáver queda en la mazmorra.
+- Puedo volver a entrar.
+- Puedo encontrar el cadáver.
+- Puedo lootearlo.
+- Puedo encontrar cofres o almacenes.
+- Puedo descansar en una sala limpia/segura.
+- Puedo encontrar una biblioteca.
+- Puedo obtener o copiar al menos una magia, aunque sea en versión mínima.
+- Puedo llegar a una sala final.
+- Puedo enfrentar un jefe simple.
+- Puedo cruzar un umbral místico hacia otra profundidad.
