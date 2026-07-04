@@ -1,6 +1,7 @@
 const clientEvents = Object.freeze({
   enterAsGuest: 'ENTER_AS_GUEST',
   joinDungeon: 'JOIN_DUNGEON',
+  playerInput: 'PLAYER_INPUT',
 });
 
 const serverEvents = Object.freeze({
