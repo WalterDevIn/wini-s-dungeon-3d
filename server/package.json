@@ -1,0 +1,8 @@
+{
+  "name": "wini-s-dungeon-3d-server",
+  "version": "0.0.0-vpreliminar",
+  "private": true,
+  "scripts": {
+    "dev": "node src/index.js"
+  }
+}
