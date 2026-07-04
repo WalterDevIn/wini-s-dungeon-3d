@@ -1,4 +1,4 @@
-export function createMenuScreen() {
+export function createMenuScreen({ onEnterAsGuest } = {}) {
   const screen = document.createElement('section');
   screen.style.display = 'grid';
   screen.style.gap = '12px';
@@ -30,6 +30,7 @@ export function createMenuScreen() {
   const button = document.createElement('button');
   button.type = 'button';
   button.textContent = 'Entrar como guest';
+  button.disabled = true;
 
   const message = document.createElement('p');
   message.setAttribute('aria-live', 'polite');
@@ -37,8 +38,9 @@ export function createMenuScreen() {
   message.style.margin = '0';
 
   button.addEventListener('click', () => {
-    const displayName = nameInput.value.trim() || 'Guest';
-    message.textContent = `Entrando como guest: ${displayName}`;
+    button.disabled = true;
+    message.textContent = 'Entrando como guest...';
+    onEnterAsGuest?.(nameInput.value);
   });
 
   screen.append(title, connectionStatus, label, button, message);
@@ -47,9 +49,11 @@ export function createMenuScreen() {
     element: screen,
     setConnectedSession(sessionId) {
       connectionStatus.textContent = `Conectado como sesión ${sessionId}`;
+      button.disabled = false;
     },
     setDisconnected() {
       connectionStatus.textContent = 'Desconectado del servidor';
+      button.disabled = true;
     },
   };
 }
