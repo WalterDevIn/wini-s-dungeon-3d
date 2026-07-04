@@ -37,7 +37,9 @@ export function connectToServer({
   onCharacterReady,
   onDisconnect,
 } = {}) {
-  const socket = io(getServerUrl());
+  const socket = io(getServerUrl(), {
+    transports: ['websocket'],
+  });
 
   socket.on('connect', () => {
     onConnect?.();
