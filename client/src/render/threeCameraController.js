@@ -49,6 +49,9 @@ export function createThreeCameraController({ canvas, camera }) {
   updateCamera();
 
   return {
+    getYaw() {
+      return state.yaw;
+    },
     update: updateCamera,
     dispose() {
       canvas.removeEventListener('pointerdown', handlePointerDown);
