@@ -10,7 +10,16 @@ Hito 4 — Guest real + personaje default
 
 ## Estado
 
-Cerrado.
+Cerrado con fix de botón guest.
+
+## Fix aplicado
+
+- `client/src/main.js` ya pasaba `onEnterAsGuest(displayName)` a `createMenuScreen`.
+- `client/src/screens/menuScreen.js` no estaba recibiendo ni llamando ese callback, por lo que el botón podía volver a comportarse como mensaje local.
+- Se corrigió `client/src/screens/menuScreen.js` para recibir `{ onEnterAsGuest }`.
+- Al apretar `Entrar como guest`, la pantalla ahora llama `onEnterAsGuest(nameInput.value)`.
+- El cliente envía el texto crudo al servidor; si está vacío o contiene solo espacios, la normalización a `Guest` queda en `server/src/auth/accountService.js`.
+- El botón queda deshabilitado hasta recibir `SESSION_CREATED`, evitando intentos antes de que exista sesión conectada.
 
 ## Qué funciona
 
