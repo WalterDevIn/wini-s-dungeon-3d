@@ -2,12 +2,15 @@ import { io } from 'socket.io-client';
 
 const clientEvents = Object.freeze({
   enterAsGuest: 'ENTER_AS_GUEST',
+  joinDungeon: 'JOIN_DUNGEON',
 });
 
 const serverEvents = Object.freeze({
   sessionCreated: 'SESSION_CREATED',
   guestReady: 'GUEST_READY',
   characterReady: 'CHARACTER_READY',
+  dungeonJoined: 'DUNGEON_JOINED',
+  worldSnapshot: 'WORLD_SNAPSHOT',
 });
 
 function getCodespacesServerUrl() {
@@ -35,6 +38,8 @@ export function connectToServer({
   onSessionCreated,
   onGuestReady,
   onCharacterReady,
+  onDungeonJoined,
+  onWorldSnapshot,
   onDisconnect,
 } = {}) {
   const socket = io(getServerUrl(), {
@@ -57,6 +62,14 @@ export function connectToServer({
     onCharacterReady?.(character);
   });
 
+  socket.on(serverEvents.dungeonJoined, (dungeon) => {
+    onDungeonJoined?.(dungeon);
+  });
+
+  socket.on(serverEvents.worldSnapshot, (snapshot) => {
+    onWorldSnapshot?.(snapshot);
+  });
+
   socket.on('disconnect', () => {
     onDisconnect?.();
   });
@@ -64,6 +77,9 @@ export function connectToServer({
   return {
     enterAsGuest(displayName) {
       socket.emit(clientEvents.enterAsGuest, { displayName });
+    },
+    joinDungeon() {
+      socket.emit(clientEvents.joinDungeon);
     },
   };
 }
