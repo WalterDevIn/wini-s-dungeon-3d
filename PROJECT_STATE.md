@@ -6,7 +6,7 @@ Wini-s-dungeon-3d vPreliminar
 
 ## Hito implementado
 
-Hito 5 — Entrar a una sala 3D local
+Hito 6 — Mundo servidor en memoria
 
 ## Estado
 
@@ -21,12 +21,16 @@ Cerrado.
 - El cliente muestra `Personaje listo`.
 - El cliente muestra `Humano Guerrero`.
 - La pantalla de personaje muestra una acción visible `Entrar a la mazmorra`.
-- Al apretar `Entrar a la mazmorra`, el cliente monta una escena Three.js local.
-- La escena 3D local contiene piso, cuatro paredes, cilindro del jugador, luz básica y cámara perspective.
+- Al apretar `Entrar a la mazmorra`, el cliente monta una escena Three.js.
+- El cliente emite `JOIN_DUNGEON` al servidor.
+- El servidor mantiene una world instance en memoria.
+- El servidor crea o reutiliza una entidad mínima para el personaje con `id`, `characterId`, `position` y `rotation`.
+- El servidor responde `DUNGEON_JOINED`.
+- El servidor emite `WORLD_SNAPSHOT` inmediatamente y luego de forma periódica.
+- El cliente renderiza cilindros desde `WORLD_SNAPSHOT`.
+- El cilindro del jugador ya no nace como verdad local del cliente en `threeSceneFactory.js`.
+- La escena 3D conserva piso, cuatro paredes, luz básica y cámara perspective.
 - La cámara rota con arrastre horizontal del mouse sobre la escena.
-- La escena 3D no emite `JOIN_DUNGEON`.
-- La escena 3D no usa `WORLD_SNAPSHOT`.
-- La escena 3D no depende de mundo servidor.
 
 ## Cómo probar
 
@@ -46,23 +50,31 @@ Verificar:
 5. El cliente muestra `Conectado como sesión <sessionId>`.
 6. Escribir `Walter` en el input.
 7. Apretar `Entrar como guest`.
-8. El cliente muestra `Personaje listo`.
-9. El cliente muestra `Humano Guerrero`.
-10. El cliente muestra el botón `Entrar a la mazmorra`.
-11. Apretar `Entrar a la mazmorra`.
-12. Verificar que aparece una escena 3D.
-13. Verificar visualmente piso, cuatro paredes, cilindro del jugador, luz básica y cámara.
-14. Arrastrar el mouse horizontalmente sobre la escena y verificar que la cámara rota alrededor de la sala.
-15. Confirmar que el servidor no imprime ni recibe `JOIN_DUNGEON`.
-16. Confirmar que el cliente no espera ni procesa `WORLD_SNAPSHOT`.
-17. Confirmar que no hay movimiento del jugador todavía.
-18. Confirmar que no aparece inventario, combate, loot, enemigos, dungeon procedural ni multiplayer jugable.
+8. El servidor imprime `ENTER_AS_GUEST received: <sessionId>`.
+9. El servidor imprime `Guest account created: <accountId> (Walter)`.
+10. El servidor imprime `Default character ready: <characterId> (Walter)`.
+11. El cliente muestra `Personaje listo`.
+12. El cliente muestra `Humano Guerrero`.
+13. El cliente muestra el botón `Entrar a la mazmorra`.
+14. Apretar `Entrar a la mazmorra`.
+15. El servidor imprime `JOIN_DUNGEON received: <sessionId>`.
+16. El cliente muestra una escena 3D.
+17. El cliente muestra `Snapshot recibido: 1 entidad(es).`.
+18. Verificar visualmente piso, cuatro paredes, luz básica y cámara.
+19. Verificar que el cilindro aparece después del snapshot servidor.
+20. Arrastrar el mouse horizontalmente sobre la escena y verificar que la cámara rota alrededor de la sala.
+21. Confirmar que no hay movimiento del jugador todavía.
+22. Confirmar que no aparece inventario, combate, loot, enemigos, dungeon procedural ni multiplayer jugable.
 
 ## Archivos relevantes
 
-- `client/package.json`
+- `server/src/net/protocol.js`
+- `server/src/net/socketServer.js`
+- `server/src/world/ecsWorld.js`
+- `server/src/world/worldInstanceService.js`
+- `server/src/world/systems/snapshotSystem.js`
+- `client/src/net/socketClient.js`
 - `client/src/main.js`
-- `client/src/screens/characterSelectScreen.js`
 - `client/src/screens/gameScreen.js`
 - `client/src/render/threeRenderer.js`
 - `client/src/render/threeSceneFactory.js`
@@ -70,15 +82,11 @@ Verificar:
 
 ## Pendientes / limitaciones
 
-- No hay mundo servidor.
-- No hay `JOIN_DUNGEON`.
-- No hay `DUNGEON_JOINED`.
-- No hay `WORLD_SNAPSHOT`.
-- No hay snapshots.
 - No hay movimiento servidor.
 - No hay input de movimiento.
-- No hay sincronización de posición.
-- No hay multiplayer jugable.
+- No hay sincronización de posición cambiante.
+- No hay multiplayer jugable completo.
+- No hay control separado por entidad entre dos pestañas.
 - No hay enemigos.
 - No hay inventario.
 - No hay combate.
@@ -87,4 +95,4 @@ Verificar:
 
 ## Próximo hito sugerido
 
-Hito 6 — Mundo servidor en memoria.
+Hito 7 — Input cliente, movimiento servidor.
