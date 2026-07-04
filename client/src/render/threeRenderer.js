@@ -88,6 +88,9 @@ export function mountThreeRenderer(container) {
   renderFrame();
 
   return {
+    getCameraYaw() {
+      return cameraController.getYaw();
+    },
     updateWorldSnapshot,
     dispose() {
       window.cancelAnimationFrame(frameId);
